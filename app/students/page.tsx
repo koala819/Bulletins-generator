@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 
-import { StudentsForm } from '@/components/molecules/StudendsForm'
+import { StudentForm } from '@/components/molecules/StudendForm'
 
 export const metadata: Metadata = {
   title: 'Création nouvel élève',
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 const CreateStudentPage = () => {
   return (
-    <StudentsForm
+    <StudentForm
       title="Créer un nouvel élève"
       description="Remplissez les informations ci-dessous pour ajouter un nouvel élève."
     />

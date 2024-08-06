@@ -1,9 +1,9 @@
-import { db } from './db'
+import { columnExists, db } from './db'
 
 export const migrate = () => {
   console.log('Début de la migration...')
   return new Promise((resolve) => {
-    db.serialize(() => {
+    db.serialize(async () => {
       // Table des étudiants (avec champs minimaux)
       db.run(`
         CREATE TABLE IF NOT EXISTS students (
@@ -13,99 +13,57 @@ export const migrate = () => {
         );
       `)
 
-      // Table des attributs d'étudiants (pour les champs dynamiques)
-      db.run(`
-        CREATE TABLE IF NOT EXISTS student_attributes (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          student_id INTEGER,
-          attribute_name TEXT NOT NULL,
-          attribute_value TEXT,
-          FOREIGN KEY (student_id) REFERENCES students(id)
-        );
-      `)
+      // Ajout des colonnes dans general_education si elles n'existent pas
+      const generalEducationColumns = [
+        { name: 'student_id', type: 'INTEGER' },
+        { name: 'session', type: 'TEXT' },
+        { name: 'dateSession', type: 'TEXT' },
+      ]
+      for (const column of generalEducationColumns) {
+        if (!(await columnExists('general_education', column.name))) {
+          db.run(
+            `ALTER TABLE general_education ADD COLUMN ${column.name} ${column.type};`,
+            (err: Error) => {
+              if (err) {
+                console.error(
+                  `Erreur lors de la mise à jour de la table general_education:`,
+                  err.message,
+                )
+              } else {
+                console.log(
+                  `Colonne ${column.name} ajoutée à la table general_education avec succès.`,
+                )
+              }
+            },
+          )
+        }
+      }
 
-      // Table de configuration des attributs (pour définir quels attributs sont disponibles)
-      db.run(`
-        CREATE TABLE IF NOT EXISTS student_config (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          attribute_name TEXT NOT NULL,
-          is_required BOOLEAN DEFAULT false
-        );
-      `)
-
-      // Table des matières
-      db.run(
-        `
-      CREATE TABLE IF NOT EXISTS subjects (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        type TEXT NOT NULL,
-        module TEXT
-      );
-    `,
-        (err: Error) => {
-          if (err) {
-            console.error(
-              'Erreur lors de la création de la table subjects:',
-              err.message,
-            )
-          } else {
-            console.log('Table subjects créée avec succès.')
-          }
-        },
-      )
-
-      // Table des notes et classements
-      db.run(
-        `
-      CREATE TABLE IF NOT EXISTS grades (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        student_id INTEGER,
-        subject_id INTEGER,
-        grade REAL,
-        student_ranking INTEGER,
-        class_average REAL,
-        appreciation TEXT,
-        FOREIGN KEY (student_id) REFERENCES students(id),
-        FOREIGN KEY (subject_id) REFERENCES subjects(id)
-      );
-    `,
-        (err: Error) => {
-          if (err) {
-            console.error(
-              'Erreur lors de la création de la table grades:',
-              err.message,
-            )
-          } else {
-            console.log('Table grades créée avec succès.')
-          }
-        },
-      )
-
-      // Table du bilan disciplinaire
-      db.run(
-        `
-      CREATE TABLE IF NOT EXISTS discipline (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        student_id INTEGER,
-        late_arrivals INTEGER,
-        absences INTEGER,
-        sanctions TEXT,
-        praises TEXT,
-        FOREIGN KEY (student_id) REFERENCES students(id)
-      );
-    `,
-        (err: Error) => {
-          if (err) {
-            console.error(
-              'Erreur lors de la création de la table discipline:',
-              err.message,
-            )
-          } else {
-            console.log('Table discipline créée avec succès.')
-          }
-        },
-      )
+      // Ajout des colonnes dans pratic_education si elles n'existent pas
+      const praticEducationColumns = [
+        { name: 'student_id', type: 'INTEGER' },
+        { name: 'session', type: 'TEXT' },
+        { name: 'dateSession', type: 'TEXT' },
+      ]
+      for (const column of praticEducationColumns) {
+        if (!(await columnExists('pratic_education', column.name))) {
+          db.run(
+            `ALTER TABLE pratic_education ADD COLUMN ${column.name} ${column.type};`,
+            (err: Error) => {
+              if (err) {
+                console.error(
+                  `Erreur lors de la mise à jour de la table pratic_education:`,
+                  err.message,
+                )
+              } else {
+                console.log(
+                  `Colonne ${column.name} ajoutée à la table pratic_education avec succès.`,
+                )
+              }
+            },
+          )
+        }
+      }
 
       resolve(true)
     })
@@ -133,7 +91,7 @@ export const createTableGeneralEducationValues = (
           console.log('Table supprimée avec succès.')
         }
       })
-      console.log('tableName is', tableName, 'columns are', columns)
+      // console.log('tableName is', tableName, 'columns are', columns)
 
       const createTableQuery = `
         CREATE TABLE ${tableName} (
@@ -195,7 +153,7 @@ export const createTablePraticEducationValues = (
           console.log('Table supprimée avec succès.')
         }
       })
-      console.log('tableName is', tableName, 'columns are', columns)
+      // console.log('tableName is', tableName, 'columns are', columns)
 
       const createTableQuery = `
         CREATE TABLE ${tableName} (

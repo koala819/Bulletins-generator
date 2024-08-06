@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { apiGet, apiPost } from '@/backend/db'
+import { apiGet, apiPost, apiRun } from '@/backend/db'
 
 export async function GET() {
   const query = 'SELECT * from students'
@@ -26,41 +26,50 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   const body = await req.json()
-  const {
-    firstname,
-    lastname,
-    promotion,
-    year,
-    formation,
-    category,
-    session,
-    dateSession,
-  } = body
+  const { firstname, lastname, session, dateSession } = body
 
-  const query = `
-    INSERT INTO students(firstname, lastname, promotion, year, formation, category, session, dateSession)
-    VALUES(?, ?, ?, ?, ?, ?, ?, ?)
-  `
-  const values = [
-    firstname,
-    lastname,
-    promotion,
-    year,
-    formation,
-    category,
-    session,
-    dateSession,
-  ]
-  // console.log('\n\n\nstudents values are', values)
+  // Begin transaction
+  const beginTransaction = 'BEGIN TRANSACTION;'
+  const commitTransaction = 'COMMIT;'
+  const rollbackTransaction = 'ROLLBACK;'
 
   try {
-    await apiPost(query, values)
+    await apiRun(beginTransaction)
+
+    // Insert into students table
+    const studentQuery = `
+      INSERT INTO students(firstname, lastname)
+      VALUES(?, ?)
+    `
+    const studentValues = [firstname, lastname]
+    const studentId = await apiPost(studentQuery, studentValues)
+
+    // Insert into general_education table
+    const generalEducationQuery = `
+      INSERT INTO general_education(student_id, session, dateSession)
+      VALUES(?, ?, ?)
+    `
+    const generalEducationValues = [studentId, session, dateSession]
+    await apiPost(generalEducationQuery, generalEducationValues)
+
+    // Insert into pratic_education table
+    const praticEducationQuery = `
+      INSERT INTO pratic_education(student_id, session, dateSession)
+      VALUES(?, ?, ?)
+    `
+    const praticEducationValues = [studentId, session, dateSession]
+    await apiPost(praticEducationQuery, praticEducationValues)
+
+    // Commit transaction
+    await apiRun(commitTransaction)
+
     return NextResponse.json(
       { statusText: 'Successfully created student' },
       { status: 200 },
     )
   } catch (err: any) {
     console.error('Erreur détaillée:', err)
+    await apiRun(rollbackTransaction)
     return NextResponse.json({ error: err.message }, { status: 400 })
   }
 }

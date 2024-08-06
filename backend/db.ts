@@ -1,3 +1,5 @@
+import { TableColumn } from '@/types/models'
+
 import path from 'path'
 import sqlite3 from 'sqlite3'
 
@@ -37,4 +39,23 @@ export const apiPost = async (query: string, values: any[]) => {
       }
     })
   })
+}
+
+export const apiRun = async (query: string) => {
+  return new Promise((resolve, reject) => {
+    db.run(query, (err: Error) => {
+      if (err) {
+        console.error('Erreur SQL:', err)
+        return reject(err)
+      }
+      resolve(true)
+    })
+  })
+}
+
+// Function to check if a column exists in a table
+export const columnExists = async (tableName: string, columnName: string) => {
+  const query = `PRAGMA table_info(${tableName})`
+  const columns = (await apiGet(query)) as TableColumn[]
+  return columns.some((col: TableColumn) => col.name === columnName)
 }

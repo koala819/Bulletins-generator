@@ -1,10 +1,10 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { useRouter } from 'next/navigation'
 
-import GeneralEducationViews from '@/components/atoms/GeneralEducationViews'
+import EducationViews from '@/components/atoms/EducationViews'
 import TopViews from '@/components/atoms/TopViews'
 import { Button } from '@/components/ui/button'
 
@@ -13,6 +13,9 @@ import { fetchTopData } from '@/lib/utils'
 const Page = () => {
   const [dataTop, setDataTop] = useState<{ data: any } | null>(null)
   const [dataGeneralEducation, setDataGeneralEducation] = useState<{
+    data: any
+  } | null>(null)
+  const [dataPraticEducation, setDataPraticEducation] = useState<{
     data: any
   } | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
@@ -32,8 +35,18 @@ const Page = () => {
             headers: { 'Content-Type': 'application/json' },
           },
         )
-        const result = await resultDataGeneralEducation.json()
-        setDataGeneralEducation(result)
+        const resultGeneral = await resultDataGeneralEducation.json()
+        setDataGeneralEducation(resultGeneral)
+
+        const resultDataPraticEducation = await fetch(
+          `${process.env.API_URL}/api/pratic-education`,
+          {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+          },
+        )
+        const resultPratic = await resultDataPraticEducation.json()
+        setDataPraticEducation(resultPratic)
       } catch (error: any) {
         console.error('Error fetching data:', error)
         setError(error)
@@ -44,6 +57,25 @@ const Page = () => {
 
     fetchData()
   }, [])
+
+  const handleDelete = async () => {
+    try {
+      const response = await fetch('/api/remove-table', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      if (response.ok) {
+        alert('Table supprimée avec succès.')
+      } else {
+        alert('Erreur lors de la suppression de la table.')
+      }
+    } catch (error) {
+      console.error('Erreur lors de la suppression de la table:', error)
+      alert('Erreur lors de la suppression de la table.')
+    }
+  }
 
   if (loading) {
     return <div className={'text-center'}>Chargement...</div>
@@ -57,17 +89,31 @@ const Page = () => {
     <div>
       <ul className="flex flex-col space-y-4 justify-center items-center">
         <li className="flex flex-col justify-between bg-gray-300">
+          <Button variant={'destructive'} onClick={handleDelete}>
+            Delete db
+          </Button>
+        </li>
+        <li className="flex flex-col justify-between bg-gray-300">
           <TopViews data={dataTop?.data} />
           <Button onClick={() => router.push('/conf/top')}>Modifier</Button>
         </li>
         <li className="flex flex-col justify-between bg-gray-300">
-          <GeneralEducationViews data={dataGeneralEducation?.data} />
+          <EducationViews
+            data={dataGeneralEducation?.data}
+            title="Enseignement Général"
+          />
           <Button onClick={() => router.push('/conf/generalEducation')}>
             Modifier
           </Button>
         </li>
-        <li>
-          <a href="/admin/item2">Item 2</a>
+        <li className="flex flex-col justify-between bg-gray-300">
+          <EducationViews
+            data={dataPraticEducation?.data}
+            title="Enseignement Pratique"
+          />
+          <Button onClick={() => router.push('/conf/praticEducation')}>
+            Modifier
+          </Button>
         </li>
       </ul>
     </div>

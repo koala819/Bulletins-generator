@@ -4,3 +4,7 @@ export type FormDataTopConfig = {
     value: string
   }[]
 }
+
+export type Item = {
+  [key: string]: any
+}

@@ -8,7 +8,13 @@ import {
   TableRow,
 } from '@/components/ui/table'
 
-export default function GeneralEducationViews({ data }: { data: any }) {
+export default function EducationViews({
+  data,
+  title,
+}: {
+  data: any
+  title: string
+}) {
   // Extract the keys for the subjects and modules
   const matiereKeys = Object.keys(data[0]).filter((key) =>
     key.startsWith('Matière'),
@@ -19,7 +25,7 @@ export default function GeneralEducationViews({ data }: { data: any }) {
 
   return (
     <Table>
-      <TableCaption>Enseignements Général & Scientifique</TableCaption>
+      <TableCaption>{title}</TableCaption>
       <TableHeader>
         <TableRow>
           <TableHead className="text-center">Matière</TableHead>

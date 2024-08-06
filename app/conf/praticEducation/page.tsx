@@ -3,14 +3,14 @@ import { Metadata } from 'next'
 import { EducationConfig } from '@/components/atoms/EducationConfig'
 
 export const metadata: Metadata = {
-  title: 'Enseignement Général et Scientifique',
+  title: 'Enseignement Pratique',
   alternates: {
-    canonical: `${process.env.CLIENT_URL}/conf/generalEducation`,
+    canonical: `${process.env.CLIENT_URL}/conf/praticEducation`,
   },
 }
 
 const GenSchoolPage = () => {
-  return <EducationConfig type={'general'} />
+  return <EducationConfig type={'pratic'} />
 }
 
 export default GenSchoolPage

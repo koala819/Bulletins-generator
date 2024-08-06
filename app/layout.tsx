@@ -3,7 +3,6 @@ import { Inter as FontSans } from 'next/font/google'
 
 import { Footer } from '@/components/molecules/Footer'
 import { Navbar } from '@/components/molecules/Navbar'
-import GoogleAnalytics from '@/components/util/GoogleAnalytics'
 
 import { Providers } from './providers'
 
@@ -41,7 +40,6 @@ export default function RootLayout({
               <main className="flex-1 pt-16">
                 <div className="w-full lg:w-8/12 px-4 mx-auto mt-6">
                   <div className="flex flex-col min-w-0 break-words w-full mb-6rounded-lg bg-gray-50 dark:bg-slate-800 border-0">
-                    <GoogleAnalytics />
                     {children}
                   </div>
                 </div>

@@ -87,13 +87,33 @@ export function EducationConfig({ type }: { type: string }) {
     }
     console.log('data', data)
     setLoading(true)
+
     try {
+      const formattedData: { name: string; module: string }[] =
+        data.fields.reduce(
+          (acc: { name: string; module: string }[], field, index, array) => {
+            if (field.name.startsWith('Matière')) {
+              const moduleField = array.find(
+                (f) => f.name === `Module ${field.name.split(' ')[1]}`,
+              )
+              if (moduleField) {
+                acc.push({
+                  name: field.value,
+                  module: moduleField.value,
+                })
+              }
+            }
+            return acc
+          },
+          [],
+        )
+
       const response = await fetch(
-        `${process.env.API_URL}/api/general-education`,
+        `${process.env.API_URL}/api/${type}-education`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data.fields),
+          body: JSON.stringify(formattedData),
         },
       )
       if (response.ok) {

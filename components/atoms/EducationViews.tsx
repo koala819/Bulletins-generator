@@ -15,14 +15,6 @@ export default function EducationViews({
   data: any
   title: string
 }) {
-  // Extract the keys for the subjects and modules
-  const matiereKeys = Object.keys(data[0]).filter((key) =>
-    key.startsWith('Matière'),
-  )
-  const moduleKeys = Object.keys(data[0]).filter((key) =>
-    key.startsWith('Module'),
-  )
-
   return (
     <Table>
       <TableCaption>{title}</TableCaption>
@@ -33,12 +25,10 @@ export default function EducationViews({
         </TableRow>
       </TableHeader>
       <TableBody>
-        {matiereKeys.map((matiereKey, index) => (
+        {data.map((value: { name: string; module: string }, index: number) => (
           <TableRow key={index}>
-            <TableCell className="text-center">{data[0][matiereKey]}</TableCell>
-            <TableCell className="text-center">
-              {data[0][moduleKeys[index]]}
-            </TableCell>
+            <TableCell className="text-center">{value.name}</TableCell>
+            <TableCell className="text-center">{value.module}</TableCell>
           </TableRow>
         ))}
       </TableBody>

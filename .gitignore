@@ -1,0 +1,44 @@
+# Dépendances
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+/.jampack
+
+# Dossier de build Next.js
+.next/
+out/
+
+# Fichiers de cache
+.cache/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Fichiers spécifiques à l'environnement
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Fichiers et dossiers spécifiques à Strapi
+.gestion-contenu/build/
+.gestion-contenu/.cache/
+.gestion-contenu/extensions/
+
+# Fichiers et dossiers de l'éditeur
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Fichiers spécifiques du système d'exploitation
+.DS_Store
+Thumbs.db
+
+# Autres fichiers et dossiers à ignorer
+coverage/
+dist/
+tmp/

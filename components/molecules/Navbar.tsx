@@ -1,6 +1,6 @@
 'use client'
 
-import { Menu } from 'lucide-react'
+import { Home, Menu } from 'lucide-react'
 import * as React from 'react'
 import { useState } from 'react'
 
@@ -41,8 +41,7 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <Link href="/" className="flex items-center">
-            {/* Add your logo or site name here */}
-            <span className="text-xl font-bold">Your Logo</span>
+            <Home w-8 h-8 />
           </Link>
 
           {/* Desktop Navigation */}

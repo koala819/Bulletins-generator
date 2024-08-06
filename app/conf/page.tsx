@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 
 import { useRouter } from 'next/navigation'
 
-import DynamicAttributes from '@/components/atoms/DynamicAttributes'
+import TopViews from '@/components/atoms/TopViews'
 import { Button } from '@/components/ui/button'
 
 const Page = () => {
@@ -46,7 +46,7 @@ const Page = () => {
     <div>
       <ul className="flex flex-col space-y-4 justify-center items-center">
         <li className="flex flex-col justify-between bg-gray-300">
-          <DynamicAttributes data={data?.data} />
+          <TopViews data={data?.data} />
           <Button onClick={() => router.push('/conf/top')}>Modifier</Button>
           {/* <a href="/conf/top">top</a> */}
         </li>

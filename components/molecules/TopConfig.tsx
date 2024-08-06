@@ -54,19 +54,17 @@ export function TopConfig() {
       return
     }
 
-    console.log('data is', data.fields)
+    // console.log('data is', data.fields)
     setLoading(true)
     try {
-      const response = await fetch(
-        `${process.env.API_URL}/api/student-config`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data.fields),
-        },
-      )
+      const response = await fetch(`${process.env.API_URL}/api/top`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data.fields),
+      })
       if (response.ok) {
         toast.success('Configuration sauvegardée avec succès')
+        router.push('/conf/top')
       } else {
         toast.error('Erreur lors de la sauvegarde de la configuration')
       }

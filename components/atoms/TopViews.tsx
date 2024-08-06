@@ -8,7 +8,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 
-export default function DynamicAttributes({ data }: { data: any }) {
+export default function TopViews({ data }: { data: any }) {
   const headers =
     data && data.length > 0
       ? Object.keys(data[0]).filter((key) => key !== 'id')
@@ -20,7 +20,9 @@ export default function DynamicAttributes({ data }: { data: any }) {
       <TableHeader>
         <TableRow>
           {headers.map((header, idx) => (
-            <TableHead key={idx}>{header}</TableHead>
+            <TableHead key={idx} className="text-center">
+              {header}
+            </TableHead>
           ))}
         </TableRow>
       </TableHeader>
@@ -28,7 +30,9 @@ export default function DynamicAttributes({ data }: { data: any }) {
         {data.map((row: any, rowIndex: number) => (
           <TableRow key={rowIndex}>
             {headers.map((header, cellIndex) => (
-              <TableCell key={cellIndex}>{row[header]}</TableCell>
+              <TableCell key={cellIndex} className="text-center">
+                {row[header]}
+              </TableCell>
             ))}
           </TableRow>
         ))}

@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 import { apiGet } from '@/backend/db'
-import { createDynamicTable } from '@/backend/migrations'
+import { createTableTopValues } from '@/backend/migrations'
 
 export async function GET() {
-  const query = 'SELECT * FROM dynamic_attributes'
+  const query = 'SELECT * FROM top_values'
   try {
     const config = await apiGet(query)
     // console.log('\n\n\nconfig is', config)
@@ -35,10 +35,10 @@ export async function POST(req: NextRequest) {
       },
     )
 
-    console.log('attributeFields are', attributeFields)
+    // console.log('attributeFields are', attributeFields)
 
     // Create dynamic table with attributes
-    await createDynamicTable(attributeFields)
+    await createTableTopValues(attributeFields)
     return new NextResponse('Configuration saved successfully', { status: 200 })
   } catch (error: any) {
     console.error('Error saving configuration:', error)

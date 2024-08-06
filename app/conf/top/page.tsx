@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 
-import { TopConfig } from '@/components/molecules/TopConfig'
+import { TopConfig } from '@/components/atoms/TopConfig'
 
 export const metadata: Metadata = {
   title: 'Configuration',

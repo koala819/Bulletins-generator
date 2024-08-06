@@ -113,11 +113,73 @@ export const migrate = () => {
   })
 }
 
-export const createDynamicTable = (
+export const createTableGeneralEducationValues = (
   fields: { name: string; value: string }[],
 ) => {
   return new Promise((resolve, reject) => {
-    const tableName = 'dynamic_attributes'
+    const tableName = 'general_education'
+    const columns = fields.map((field) => `"${field.name}" TEXT`).join(', ')
+    const values = fields.map((field) => `'${field.value}'`).join(', ')
+
+    db.serialize(() => {
+      db.run(`DROP TABLE IF EXISTS ${tableName}`, (err: Error) => {
+        if (err) {
+          console.error(
+            'Erreur lors de la suppression de la table:',
+            err.message,
+          )
+          return reject(err)
+        } else {
+          console.log('Table supprimée avec succès.')
+        }
+      })
+      console.log('tableName is', tableName, 'columns are', columns)
+
+      const createTableQuery = `
+        CREATE TABLE ${tableName} (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          ${columns}
+        );
+      `
+
+      db.run(createTableQuery, (err: Error) => {
+        if (err) {
+          console.error(
+            'Erreur lors de la création de la table dynamique:',
+            err.message,
+          )
+          return reject(err)
+        } else {
+          console.log('Table dynamique créée avec succès.')
+
+          const insertRowQuery = `
+            INSERT INTO ${tableName} (${fields.map((field) => `"${field.name}"`).join(', ')})
+            VALUES (${values});
+          `
+
+          db.run(insertRowQuery, (err: Error) => {
+            if (err) {
+              console.error(
+                "Erreur lors de l'insertion des valeurs:",
+                err.message,
+              )
+              return reject(err)
+            } else {
+              console.log('Valeurs insérées avec succès.')
+              resolve(true)
+            }
+          })
+        }
+      })
+    })
+  })
+}
+
+export const createTableTopValues = (
+  fields: { name: string; value: string }[],
+) => {
+  return new Promise((resolve, reject) => {
+    const tableName = 'top_values'
     const columns = fields.map((field) => `"${field.name}" TEXT`).join(', ')
     const values = fields.map((field) => `'${field.value}'`).join(', ')
 

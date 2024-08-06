@@ -88,7 +88,7 @@ export function TopConfig() {
       })
       if (response.ok) {
         toast.success('Configuration sauvegardée avec succès')
-        router.push('/conf/top')
+        router.push('/conf')
       } else {
         toast.error('Erreur lors de la sauvegarde de la configuration')
       }

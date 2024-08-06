@@ -33,8 +33,8 @@ export function TopConfig() {
         { name: 'Année', value: '' },
         { name: 'Formation', value: '' },
         { name: 'Catégorie', value: '' },
-        { name: 'Session', value: '' },
-        { name: 'dates-Session', value: '' },
+        { name: 'dates-Session1', value: '' },
+        { name: 'dates-Session2', value: '' },
       ],
     },
   })
@@ -56,8 +56,14 @@ export function TopConfig() {
               { name: 'Année', value: result.data[0].Année },
               { name: 'Formation', value: result.data[0].Formation },
               { name: 'Catégorie', value: result.data[0].Catégorie },
-              { name: 'Session', value: result.data[0].Session },
-              { name: 'dates-Session', value: result.data[0]['dates-Session'] },
+              {
+                name: 'dates-Session1',
+                value: result.data[0]['dates-Session1'],
+              },
+              {
+                name: 'dates-Session2',
+                value: result.data[0]['dates-Session2'],
+              },
             ],
           })
         }

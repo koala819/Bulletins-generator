@@ -89,11 +89,6 @@ const Page = () => {
     <div>
       <ul className="flex flex-col space-y-4 justify-center items-center">
         <li className="flex flex-col justify-between bg-gray-300">
-          <Button variant={'destructive'} onClick={handleDelete}>
-            Delete db
-          </Button>
-        </li>
-        <li className="flex flex-col justify-between bg-gray-300">
           <TopViews data={dataTop?.data} />
           <Button onClick={() => router.push('/conf/top')}>Modifier</Button>
         </li>
@@ -113,6 +108,11 @@ const Page = () => {
           />
           <Button onClick={() => router.push('/conf/praticEducation')}>
             Modifier
+          </Button>
+        </li>
+        <li className="flex flex-col justify-between bg-gray-300">
+          <Button variant={'destructive'} onClick={handleDelete}>
+            Delete db
           </Button>
         </li>
       </ul>

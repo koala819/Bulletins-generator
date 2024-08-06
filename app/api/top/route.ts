@@ -34,7 +34,6 @@ export async function POST(req: NextRequest) {
         }
       },
     )
-
     // console.log('attributeFields are', attributeFields)
 
     // Create dynamic table with attributes
@@ -44,31 +43,4 @@ export async function POST(req: NextRequest) {
     console.error('Error saving configuration:', error)
     return new NextResponse('Error saving configuration', { status: 500 })
   }
-
-  // try {
-  //   // Insérer l'étudiant
-  //   const insertStudentQuery = `
-  //       INSERT INTO students(firstname, lastname)
-  //       VALUES(?, ?)
-  //     `
-  //   const studentId = await apiPost(insertStudentQuery, [firstname, lastname])
-
-  //   // Insérer les attributs
-  //   const insertAttributeQuery = `
-  //       INSERT INTO student_attributes(student_id, attribute_name, attribute_value)
-  //       VALUES(?, ?, ?)
-  //     `
-  //   for (const [name, value] of Object.entries(attributes)) {
-  //     await apiPost(insertAttributeQuery, [studentId, name, value])
-  //   }
-
-  //   return NextResponse.json(
-  //     { statusText: 'Successfully created student' },
-  //     { status: 200 },
-  //   )
-  // } catch (err: any) {
-  //   console.error('Erreur détaillée:', err)
-  //   return NextResponse.json({ error: err.message }, { status: 400 })
-  // }
-  // return NextResponse.json({ error: 'Tutute' }, { status: 400 })
 }

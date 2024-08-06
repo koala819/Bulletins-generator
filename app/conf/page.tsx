@@ -7,6 +7,8 @@ import { useRouter } from 'next/navigation'
 import TopViews from '@/components/atoms/TopViews'
 import { Button } from '@/components/ui/button'
 
+import { fetchTopData } from '@/lib/utils'
+
 const Page = () => {
   const [data, setData] = useState<{ data: any } | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
@@ -16,12 +18,7 @@ const Page = () => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await fetch(`${process.env.API_URL}/api/top`, {
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json' },
-        })
-        const result = await response.json()
-        // console.log('top values are', result)
+        const result = await fetchTopData()
         setData(result)
       } catch (error: any) {
         console.error('Error fetching data:', error)

@@ -1,10 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useFieldArray, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 
 import { useRouter } from 'next/navigation'
+
+import { FormDataTopConfig } from '@/types/models'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -17,18 +19,14 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 
-type FormData = {
-  fields: {
-    name: string
-    value: string
-  }[]
-}
+import { fetchTopData } from '@/lib/utils'
 
 export function TopConfig() {
   const [loading, setLoading] = useState<boolean>(false)
+
   const router = useRouter()
 
-  const form = useForm<FormData>({
+  const form = useForm<FormDataTopConfig>({
     defaultValues: {
       fields: [
         { name: 'Promotion', value: '' },
@@ -46,7 +44,34 @@ export function TopConfig() {
     name: 'fields',
   })
 
-  const onSubmit = async (data: FormData) => {
+  useEffect(() => {
+    async function fetchData() {
+      setLoading(true)
+      try {
+        const result = await fetchTopData()
+        if (result?.data?.length > 0) {
+          form.reset({
+            fields: [
+              { name: 'Promotion', value: result.data[0].Promotion },
+              { name: 'Année', value: result.data[0].Année },
+              { name: 'Formation', value: result.data[0].Formation },
+              { name: 'Catégorie', value: result.data[0].Catégorie },
+              { name: 'Session', value: result.data[0].Session },
+              { name: 'dates-Session', value: result.data[0]['dates-Session'] },
+            ],
+          })
+        }
+      } catch (error: any) {
+        console.error('Error fetching data:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchData()
+  }, [])
+
+  const onSubmit = async (data: FormDataTopConfig) => {
     const confirm = window.confirm(
       'Cette action détruira toutes les données existantes et les remplacera par celles saisies. Voulez-vous continuer ?',
     )
@@ -54,7 +79,6 @@ export function TopConfig() {
       return
     }
 
-    // console.log('data is', data.fields)
     setLoading(true)
     try {
       const response = await fetch(`${process.env.API_URL}/api/top`, {

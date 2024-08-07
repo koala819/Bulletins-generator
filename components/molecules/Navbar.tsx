@@ -1,8 +1,7 @@
 'use client'
 
 import { Home, Menu } from 'lucide-react'
-import * as React from 'react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import Link from 'next/link'
 
@@ -15,10 +14,21 @@ import {
 } from '@/components/ui/navigation-menu'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../ui/select'
+
+import { useSession } from '@/context/SessionContext'
+
 export function Navbar() {
   const [isSheetOpen, setIsSheetOpen] = useState<boolean>(false)
+  const { session, setSession, sessionDates } = useSession()
 
-  React.useEffect(() => {
+  useEffect(() => {
     const handleScroll = () => {
       const navbar = document.querySelector('header')
       if (window.scrollY > 50) {
@@ -37,12 +47,32 @@ export function Navbar() {
   const closeSheet = () => setIsSheetOpen(false)
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 bg-white shadow-md">
+    <div
+      className={`fixed top-0 left-0 right-0 z-50 shadow-md ${
+        session === 1 ? 'bg-blue-100' : 'bg-green-100'
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <Link href="/" className="flex items-center">
             <Home />
           </Link>
+          <Select
+            onValueChange={(value) => setSession(parseInt(value) as Session)}
+            value={session.toString()}
+          >
+            <SelectTrigger className="w-[300px]">
+              <SelectValue placeholder="Choisir une session" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="1">
+                Session 1 - {sessionDates.session1}
+              </SelectItem>
+              <SelectItem value="2">
+                Session 2 - {sessionDates.session2}
+              </SelectItem>
+            </SelectContent>
+          </Select>
 
           {/* Desktop Navigation */}
           <NavigationMenu className="hidden md:flex">

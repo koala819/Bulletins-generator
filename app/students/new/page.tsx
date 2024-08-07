@@ -5,7 +5,7 @@ import { StudentForm } from '@/components/molecules/StudendForm'
 export const metadata: Metadata = {
   title: 'Création nouvel élève',
   alternates: {
-    canonical: `${process.env.CLIENT_URL}/students/new`,
+    canonical: `${process.env.API_URL}/students/new`,
   },
 }
 

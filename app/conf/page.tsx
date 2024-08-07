@@ -36,7 +36,7 @@ const Page = () => {
           },
         )
         const resultGeneral = await resultDataGeneralEducation.json()
-        console.log('resultGeneral is', resultGeneral.data)
+        // console.log('resultGeneral is', resultGeneral.data)
         setDataGeneralEducation(resultGeneral)
 
         const resultDataPraticEducation = await fetch(
@@ -47,7 +47,7 @@ const Page = () => {
           },
         )
         const resultPratic = await resultDataPraticEducation.json()
-        console.log('resultPratic is', resultPratic.data)
+        // console.log('resultPratic is', resultPratic.data)
 
         setDataPraticEducation(resultPratic)
       } catch (error: any) {

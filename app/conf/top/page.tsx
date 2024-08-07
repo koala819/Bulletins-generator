@@ -5,7 +5,7 @@ import { TopConfig } from '@/components/atoms/TopConfig'
 export const metadata: Metadata = {
   title: 'Configuration',
   alternates: {
-    canonical: `${process.env.CLIENT_URL}/conf/top`,
+    canonical: `${process.env.API_URL}/conf/top`,
   },
 }
 

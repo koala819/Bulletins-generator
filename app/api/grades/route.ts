@@ -1,18 +1,44 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { getStudentsWithSubjects } from '@/backend/helpers'
+import { getGrades } from '@/backend/helpers'
 import { writeGrade } from '@/backend/helpers'
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url)
+  const studentId = searchParams.get('studentId')
+  const session = searchParams.get('session')
+
+  if (!studentId || !session) {
+    return new NextResponse('Student ID and session are required', {
+      status: 400,
+    })
+  }
+
   try {
-    const data = await getStudentsWithSubjects()
-    return NextResponse.json({ data }, { status: 200 })
-  } catch (error: any) {
-    console.error('Error fetching students with grades:', error)
-    return NextResponse.json(
-      { success: false, message: error.message },
-      { status: 500 },
+    const generalGrades = await getGrades(
+      'general_education',
+      parseInt(studentId),
+      parseInt(session),
     )
+    // console.log('\n\n\ngeneralGrades', generalGrades)
+    const praticGrades = await getGrades(
+      'pratic_education',
+      parseInt(studentId),
+      parseInt(session),
+    )
+
+    // console.log('praticGrades', praticGrades, '\n\n\n')
+
+    return NextResponse.json(
+      {
+        general: generalGrades,
+        pratic: praticGrades,
+      },
+      { status: 200 },
+    )
+  } catch (error: any) {
+    console.error('Error fetching grades:', error)
+    return new NextResponse('Error fetching grades', { status: 500 })
   }
 }
 
@@ -32,9 +58,9 @@ export async function POST(req: NextRequest) {
       session,
       grade,
     )
-    return new NextResponse('Grade updated successfully', { status: 200 })
+    return new NextResponse('Grade recorded successfully', { status: 200 })
   } catch (error: any) {
-    console.error('Error updating grade:', error)
-    return new NextResponse('Error updating grade', { status: 500 })
+    console.error('Error recording grade:', error)
+    return new NextResponse('Error recording grade', { status: 500 })
   }
 }

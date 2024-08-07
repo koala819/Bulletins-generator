@@ -4,7 +4,7 @@ import { deleteUnusedTable } from '@/backend/migrations'
 
 export async function DELETE() {
   try {
-    await deleteUnusedTable('pratic_education')
+    await deleteUnusedTable('general_education')
     return new NextResponse('Deleted table successfully', { status: 200 })
   } catch (error) {
     console.error('Erreur lors de la suppression de la table:', error)

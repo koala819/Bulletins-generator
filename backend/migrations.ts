@@ -300,40 +300,40 @@ export const deleteUnusedTable = (name: string) => {
   })
 }
 
-export const getStudentsWithSubjects = () => {
-  return new Promise((resolve, reject) => {
-    const query = `
-      SELECT 
-        students.id, 
-        students.firstname, 
-        students.lastname,
-        general_subjects.name as general_subject,
-        pratic_subjects.name as pratic_subject,
-        general_education.session as general_session,
-        general_education.grade as general_grade,
-        general_education.class_average as general_class_average,
-        general_education.appreciation as general_appreciation,
-        pratic_education.session as pratic_session,
-        pratic_education.grade as pratic_grade,
-        pratic_education.class_average as pratic_class_average,
-        pratic_education.appreciation as pratic_appreciation
-      FROM students
-      LEFT JOIN general_education ON students.id = general_education.student_id
-      LEFT JOIN pratic_education ON students.id = pratic_education.student_id
-      LEFT JOIN general_subjects ON general_education.subject_id = general_subjects.id
-      LEFT JOIN pratic_subjects ON pratic_education.subject_id = pratic_subjects.id
-    `
+// export const getStudentsWithSubjects = () => {
+//   return new Promise((resolve, reject) => {
+//     const query = `
+//       SELECT
+//         students.id,
+//         students.firstname,
+//         students.lastname,
+//         general_subjects.name as general_subject,
+//         pratic_subjects.name as pratic_subject,
+//         general_education.session as general_session,
+//         general_education.grade as general_grade,
+//         general_education.class_average as general_class_average,
+//         general_education.appreciation as general_appreciation,
+//         pratic_education.session as pratic_session,
+//         pratic_education.grade as pratic_grade,
+//         pratic_education.class_average as pratic_class_average,
+//         pratic_education.appreciation as pratic_appreciation
+//       FROM students
+//       LEFT JOIN general_education ON students.id = general_education.student_id
+//       LEFT JOIN pratic_education ON students.id = pratic_education.student_id
+//       LEFT JOIN general_subjects ON general_education.subject_id = general_subjects.id
+//       LEFT JOIN pratic_subjects ON pratic_education.subject_id = pratic_subjects.id
+//     `
 
-    db.all(query, (err, rows) => {
-      if (err) {
-        return reject(err)
-      }
-      console.log('rows', rows)
+//     db.all(query, (err, rows) => {
+//       if (err) {
+//         return reject(err)
+//       }
+//       console.log('rows', rows)
 
-      resolve(rows)
-    })
-  })
-}
+//       resolve(rows)
+//     })
+//   })
+// }
 
 // export const migrate = async () => {
 //   try {

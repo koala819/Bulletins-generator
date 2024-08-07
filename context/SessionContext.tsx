@@ -1,11 +1,6 @@
-// contexts/SessionContext.tsx
 'use client'
 
 import { createContext, useContext, useEffect, useState } from 'react'
-
-// contexts/SessionContext.tsx
-
-// contexts/SessionContext.tsx
 
 type Session = 1 | 2
 
@@ -19,6 +14,7 @@ interface SessionContextType {
   // eslint-disable-next-line no-unused-vars
   setSession: (session: Session) => void
   sessionDates: SessionDates
+  isLoading: boolean
 }
 
 const SessionContext = createContext<SessionContextType | undefined>(undefined)
@@ -31,27 +27,33 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({
     session1: '',
     session2: '',
   })
+  const [isLoading, setIsLoading] = useState<boolean>(true)
 
   useEffect(() => {
-    fetch(`${process.env.API_URL}/api/top`)
-      .then((res) => res.json())
-      .then((data) => {
-        const topValues = data.data[0]
-        setSessionDates({
-          session1: topValues['dates-Session1'],
-          session2: topValues['dates-Session2'],
-        })
+    setIsLoading(true)
 
-        const today = new Date()
-        const session1End = new Date(
-          topValues['dates-Session1'].split('au')[1].trim(),
-        )
-        setSession(today <= session1End ? 1 : 2)
-      })
+    async function fecthData() {
+      try {
+        const response = await fetch(`${process.env.API_URL}/api/top`)
+        const data = await response.json()
+        setSessionDates({
+          session1: data.data[0]['dates-Session1'],
+          session2: data.data[0]['dates-Session2'],
+        })
+      } catch (error) {
+        console.error(error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fecthData()
   }, [])
 
   return (
-    <SessionContext.Provider value={{ session, setSession, sessionDates }}>
+    <SessionContext.Provider
+      value={{ session, setSession, sessionDates, isLoading }}
+    >
       {children}
     </SessionContext.Provider>
   )

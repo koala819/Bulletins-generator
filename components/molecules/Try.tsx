@@ -76,20 +76,48 @@ const BulletinScolaire = () => {
   return (
     <div className="container mx-auto p-4">
       <Card>
-        <CardHeader>
-          <CardTitle>BULLETIN D&apos;EVALUATION</CardTitle>
-          <div>FORMATION TECHNICIEN DE MAINTENANCE AERONAUTIQUE</div>
+        <CardHeader className="text-center">
+          <CardTitle className="text-center">
+            BULLETIN D&apos;EVALUATION
+          </CardTitle>
+          <div className="text-sm">
+            FORMATION TECHNICIEN DE MAINTENANCE AERONAUTIQUE
+          </div>
         </CardHeader>
         <CardContent>
           <div className="mb-4">
-            <p>
-              Nom: {student?.firstname} {student?.lastname}
-            </p>
-            <p>Promotion: {topValues.Promotion}</p>
-            <p>Année: {topValues.Année}</p>
-            <p>FORMATION : {topValues.Formation}</p>
-            <p>Catégorie :{topValues.Catégorie}</p>
-            <p>Session : {currentSessionDate}</p>
+            <div className="flex justify-between mb-2">
+              <p className="font-bold uppercase text-3xl">
+                {student?.firstname} {student?.lastname}
+              </p>
+              <p>
+                Promotion:{' '}
+                <span className="font-bold">{topValues.Promotion}</span>
+              </p>
+              <p>
+                Année: <span className="font-bold">{topValues.Année}</span>
+              </p>
+            </div>
+            <div className="flex justify-between mb-2">
+              <p className="flex flex-col text-center">
+                FORMATION:
+                <span className="font-bold">{topValues.Formation}</span>
+              </p>
+              <p className="flex flex-col text-center">
+                Catégorie:
+                <span className="font-bold">{topValues.Catégorie}</span>
+              </p>
+              <p className="flex flex-col text-center">
+                Session:
+                <span className="font-bold">
+                  {session === 1 ? '1ère Phase' : '2ème Phase'}
+                </span>
+              </p>
+              <p className="flex flex-col text-center">
+                Session Date:
+                <span className="font-bold">{currentSessionDate}</span>
+              </p>
+            </div>
           </div>
 
           {/* Matières géénrales */}

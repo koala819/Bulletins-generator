@@ -17,6 +17,8 @@ import {
 
 export function StudentList() {
   const [students, setStudents] = useState<any[]>([])
+  const [loading, setLoading] = useState<boolean>(true)
+
   const router = useRouter()
 
   useEffect(() => {
@@ -27,8 +29,9 @@ export function StudentList() {
           headers: { 'Content-Type': 'application/json' },
         })
         const result = await response.json()
-        console.log('result', result)
+        // console.log('result', result)
         setStudents(result.data)
+        setLoading(false)
       } catch (error) {
         toast.error('Erreur lors de la récupération des étudiants')
       }
@@ -36,6 +39,10 @@ export function StudentList() {
 
     fetchStudents()
   }, [])
+
+  if (loading) {
+    return <div className="text-center">Chargement des données...</div>
+  }
 
   return (
     <div className="flex justify-center">
@@ -55,12 +62,12 @@ export function StudentList() {
                 <tr>
                   <th className="border p-2">Prénom</th>
                   <th className="border p-2">Nom</th>
-                  <th className="border p-2">Matières Générales</th>
+                  {/* <th className="border p-2">Matières Générales</th>
                   <th className="border p-2">Notes Générales (S1)</th>
                   <th className="border p-2">Notes Générales (S2)</th>
                   <th className="border p-2">Matières Pratiques</th>
                   <th className="border p-2">Notes Pratiques (S1)</th>
-                  <th className="border p-2">Notes Pratiques (S2)</th>
+                  <th className="border p-2">Notes Pratiques (S2)</th> */}
                 </tr>
               </thead>
               <tbody>
@@ -68,7 +75,7 @@ export function StudentList() {
                   <tr key={student.id}>
                     <td className="border p-2">{student.firstname}</td>
                     <td className="border p-2">{student.lastname}</td>
-                    <td className="border p-2">{student.general_subject}</td>
+                    {/* <td className="border p-2">{student.general_subject}</td>
                     <td className="border p-2">
                       {student.general_session === 1 && (
                         <>
@@ -105,7 +112,7 @@ export function StudentList() {
                           <p>Appreciation: {student.pratic_appreciation}</p>
                         </>
                       )}
-                    </td>
+                    </td> */}
                   </tr>
                 ))}
               </tbody>

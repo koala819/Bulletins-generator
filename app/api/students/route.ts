@@ -1,14 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { createStudent, getStudentsWithSubjects } from '@/backend/migrations'
+import { db } from '@/backend/db'
+import { createStudent } from '@/backend/migrations'
 
 export async function GET() {
   try {
-    const students = await getStudentsWithSubjects()
-    return new NextResponse(JSON.stringify({ data: students }), { status: 200 })
+    const data = await new Promise((resolve, reject) => {
+      db.all(`SELECT * FROM students`, (err, rows) => {
+        if (err) {
+          return reject(err)
+        }
+        return resolve(rows)
+      })
+    })
+
+    return NextResponse.json({ data }, { status: 200 })
   } catch (error: any) {
-    console.error('Error fetching students:', error)
-    return new NextResponse('Error fetching students', { status: 500 })
+    console.error(error.message)
+    return NextResponse.json(
+      { success: false, message: error.message },
+      { status: 500 },
+    )
   }
 }
 

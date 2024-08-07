@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
 
-// import { toast } from 'react-toastify'
+import { useRouter } from 'next/navigation'
+
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -21,22 +23,25 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 
-// import { useSession } from '@/context/SessionContext'
+import { useSession } from '@/context/SessionContext'
 import { z } from 'zod'
 
 const FormSchema = z.object({
   subject: z.string({
     required_error: 'Please select a subject',
   }),
-  grades: z.record(z.string(), z.number()),
+  grades: z.record(z.string(), z.number().int()),
 })
 
 const GradeEntry = () => {
-  //   const { session } = useSession()
   const [generalSubjects, setGeneralSubjects] = useState<any[]>([])
   const [praticSubjects, setPraticSubjects] = useState<any[]>([])
   const [students, setStudents] = useState<any[]>([])
   const [selectedSubject, setSelectedSubject] = useState<any>(null)
+  const [loading, setLoading] = useState<boolean>(false)
+  const router = useRouter()
+
+  const { session } = useSession()
 
   const form = useForm<z.infer<typeof FormSchema>>({
     defaultValues: {
@@ -79,7 +84,48 @@ const GradeEntry = () => {
   }, [])
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
-    console.log('data', data)
+    // console.log('data', data)
+    setLoading(true)
+    const subjectId = parseInt(data.subject.split('-')[1])
+    const subjectType = data.subject.split('-')[0]
+
+    for (const [studentId, grade] of Object.entries(data.grades)) {
+      const payload = {
+        studentId: parseInt(studentId),
+        subjectId,
+        session,
+        grade,
+        type: subjectType,
+      }
+
+      // console.log('payload', payload)
+
+      try {
+        const res = await fetch(`${process.env.API_URL}/api/grades`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        })
+
+        if (!res.ok) {
+          console.error('Failed to update grade:', await res.text())
+        } else {
+          toast.success('Notes enregistrées avec succès !')
+          form.reset()
+          router.push('/')
+        }
+      } catch (error) {
+        console.error('Error updating grade:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+  }
+
+  if (loading) {
+    return <div className="texte-center">Enregistrement des notes ...</div>
   }
 
   return (
@@ -95,8 +141,6 @@ const GradeEntry = () => {
                 <Select
                   onValueChange={(value) => {
                     field.onChange(value)
-                    console.log('field.onChange', field.onChange)
-                    console.log('selected', value)
                     setSelectedSubject(value)
                   }}
                 >
@@ -110,7 +154,7 @@ const GradeEntry = () => {
                     {generalSubjects.map((subject) => (
                       <SelectItem
                         key={`general-${subject.id}`}
-                        value={`general-${subject.name}`}
+                        value={`general-${subject.id}`}
                       >
                         {subject.name} ({subject.module})
                       </SelectItem>
@@ -122,7 +166,7 @@ const GradeEntry = () => {
                     {praticSubjects.map((subject) => (
                       <SelectItem
                         key={`pratic-${subject.id}`}
-                        value={`pratic-${subject.name}`}
+                        value={`pratic-${subject.id}`}
                       >
                         {subject.name} ({subject.module})
                       </SelectItem>

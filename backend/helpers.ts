@@ -86,6 +86,41 @@ export const getAll = (tableName: string) => {
   })
 }
 
+export const getStudentsWithSubjects = () => {
+  return new Promise((resolve, reject) => {
+    const query = `
+      SELECT 
+        students.id, 
+        students.firstname, 
+        students.lastname,
+        general_subjects.name as general_subject,
+        pratic_subjects.name as pratic_subject,
+        general_education.session as general_session,
+        general_education.grade as general_grade,
+        general_education.class_average as general_class_average,
+        general_education.appreciation as general_appreciation,
+        pratic_education.session as pratic_session,
+        pratic_education.grade as pratic_grade,
+        pratic_education.class_average as pratic_class_average,
+        pratic_education.appreciation as pratic_appreciation
+      FROM students
+      LEFT JOIN general_education ON students.id = general_education.student_id
+      LEFT JOIN pratic_education ON students.id = pratic_education.student_id
+      LEFT JOIN general_subjects ON general_education.subject_id = general_subjects.id
+      LEFT JOIN pratic_subjects ON pratic_education.subject_id = pratic_subjects.id
+    `
+
+    db.all(query, (err, rows) => {
+      if (err) {
+        return reject(err)
+      }
+      console.log('rows', rows)
+
+      resolve(rows)
+    })
+  })
+}
+
 export const insert = (tableName: string, data: Record<string, any>) => {
   const keys = Object.keys(data)
   const values = Object.values(data)
@@ -96,6 +131,40 @@ export const insert = (tableName: string, data: Record<string, any>) => {
     db.run(query, values, function (err) {
       if (err) reject(err)
       else resolve(this.lastID)
+    })
+  })
+}
+
+export const writeGrade = (
+  tableName: 'general_education' | 'pratic_education',
+  studentId: number,
+  subjectId: number,
+  session: number,
+  grade: number,
+) => {
+  // console.log(
+  //   'updateGrade with tableName:',
+  //   tableName,
+  //   'studentId:',
+  //   studentId,
+  //   'subjectId:',
+  //   subjectId,
+  //   'session',
+  //   session,
+  //   'grade',
+  //   grade,
+  // )
+  return new Promise((resolve, reject) => {
+    const query = `
+      INSERT INTO ${tableName} (student_id, subject_id, session, grade)
+      VALUES (?, ?, ?, ?)
+    `
+    db.run(query, [studentId, subjectId, session, grade], function (err) {
+      if (err) {
+        reject(err)
+      } else {
+        resolve(this.changes)
+      }
     })
   })
 }

@@ -212,10 +212,10 @@ export const createTables = () => {
   return new Promise((resolve, reject) => {
     db.serialize(() => {
       try {
-        // Supprimer les tables existantes (sauf celles contenant les matières)
-        db.run(`DROP TABLE IF EXISTS students;`)
-        db.run(`DROP TABLE IF EXISTS general_subjects;`)
-        db.run(`DROP TABLE IF EXISTS pratic_subjects;`)
+        // // Supprimer les tables existantes (sauf celles contenant les matières)
+        // db.run(`DROP TABLE IF EXISTS students;`)
+        // db.run(`DROP TABLE IF EXISTS general_subjects;`)
+        // db.run(`DROP TABLE IF EXISTS pratic_subjects;`)
 
         // Recréer les tables
         db.run(`
@@ -248,7 +248,7 @@ export const createTables = () => {
             student_id INTEGER,
             subject_id INTEGER,
             session INTEGER,
-            grade REAL,
+            grade INTEGER,
             class_average REAL,
             appreciation TEXT,
             FOREIGN KEY (student_id) REFERENCES students(id),
@@ -262,7 +262,7 @@ export const createTables = () => {
             student_id INTEGER,
             subject_id INTEGER,
             session INTEGER,
-            grade REAL,
+            grade INTEGER,
             class_average REAL,
             appreciation TEXT,
             FOREIGN KEY (student_id) REFERENCES students(id),

@@ -357,23 +357,23 @@ export const createPraticSubjects = (
   })
 }
 
-export const createStudent = (firstname: string, lastname: string) => {
-  return new Promise((resolve, reject) => {
-    const insertQuery = `
-      INSERT INTO students (firstname, lastname)
-      VALUES (?, ?)
-    `
-    const values = [firstname, lastname]
+// export const createStudent = (firstname: string, lastname: string) => {
+//   return new Promise((resolve, reject) => {
+//     const insertQuery = `
+//       INSERT INTO students (firstname, lastname)
+//       VALUES (?, ?)
+//     `
+//     const values = [firstname, lastname]
 
-    db.run(insertQuery, values, function (err) {
-      if (err) {
-        console.error("Erreur lors de la création de l'étudiant:", err.message)
-        return reject(new Error("Erreur lors de la création de l'étudiant"))
-      }
-      resolve(this.lastID)
-    })
-  })
-}
+//     db.run(insertQuery, values, function (err) {
+//       if (err) {
+//         console.error("Erreur lors de la création de l'étudiant:", err.message)
+//         return reject(new Error("Erreur lors de la création de l'étudiant"))
+//       }
+//       resolve(this.lastID)
+//     })
+//   })
+// }
 
 export const createTables = () => {
   console.log('Début de la création des tables...')

@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { getAll } from '@/backend/helpers'
-import { createStudent } from '@/backend/migrations'
+import { getAll, insert } from '@/backend/helpers'
 
 export async function GET() {
   try {
@@ -26,7 +25,8 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const studentId = await createStudent(firstname, lastname)
+    const studentId = await insert('students', { firstname, lastname })
+    // console.log('Student created with id:', studentId)
 
     return new NextResponse(JSON.stringify({ id: studentId }), { status: 200 })
   } catch (error: any) {

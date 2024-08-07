@@ -9,18 +9,16 @@ export const getAll = (tableName: string) => {
   })
 }
 
-// export const insert = (tableName: string, data: Record<string, any>) => {
-//   const keys = Object.keys(data)
-//   const values = Object.values(data)
-//   const placeholders = keys.map(() => '?').join(', ')
+export const insert = (tableName: string, data: Record<string, any>) => {
+  const keys = Object.keys(data)
+  const values = Object.values(data)
+  const placeholders = keys.map(() => '?').join(', ')
 
-//   return new Promise((resolve, reject) => {
-//     const query = `INSERT INTO ${tableName} (${keys.join(', ')}) VALUES (${placeholders})`
-//     db.run(query, values, function (err) {
-//       if (err) reject(err)
-//       else resolve(this.lastID)
-//     })
-//   })
-// }
-
-// Ajoutez d'autres fonctions helper pour update et delete
+  return new Promise((resolve, reject) => {
+    const query = `INSERT INTO ${tableName} (${keys.join(', ')}) VALUES (${placeholders})`
+    db.run(query, values, function (err) {
+      if (err) reject(err)
+      else resolve(this.lastID)
+    })
+  })
+}

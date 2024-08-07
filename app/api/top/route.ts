@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { getAll } from '@/backend/helpers'
-import { createTopValues } from '@/backend/migrations'
+import { createTopValues, getAll } from '@/backend/helpers'
 
 export async function GET() {
   try {
@@ -17,8 +16,13 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  const body = await req.json()
-  const fields = body
+  const fields = await req.json()
+
+  if (!fields) {
+    return new NextResponse('Fields are required', {
+      status: 400,
+    })
+  }
 
   try {
     // Transform attributes into array of objects with name and value

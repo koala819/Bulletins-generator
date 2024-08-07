@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { getAll } from '@/backend/helpers'
-import { createPraticSubjects } from '@/backend/migrations'
+import { createTableWithSchema, getAll, insert } from '@/backend/helpers'
 
 export async function GET() {
   try {
@@ -17,10 +16,26 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   const subjects = await req.json()
-  console.log('Request body:', subjects)
+  // console.log('Request body:', subjects)
+
+  if (!subjects) {
+    return new NextResponse('Subjects are required', {
+      status: 400,
+    })
+  }
 
   try {
-    await createPraticSubjects(subjects)
+    const schema = `(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            module TEXT NOT NULL
+    )`
+
+    await createTableWithSchema('pratic_subjects', schema)
+
+    for (const subject of subjects) {
+      await insert('pratic_subjects', subject)
+    }
 
     return new NextResponse('Matières sauvegardées avec succès', {
       status: 200,

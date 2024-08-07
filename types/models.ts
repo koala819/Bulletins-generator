@@ -13,12 +13,3 @@ export type StudentsProps = {
   title: string
   description: string
 }
-
-export type TableColumn = {
-  cid: number
-  name: string
-  type: string
-  notnull: number
-  dflt_value: any
-  pk: number
-}

@@ -85,7 +85,7 @@ export function EducationConfig({ type }: { type: string }) {
     if (!confirm) {
       return
     }
-    console.log('data', data)
+    // console.log('data', data)
     setLoading(true)
 
     try {

@@ -1,9 +1,5 @@
 import { db } from '@/backend/db'
 
-interface GradeRow {
-  class_average: number
-}
-
 export const createTableWithSchema = (tableName: string, schema: string) => {
   return new Promise((resolve, reject) => {
     const dropQuery = `DROP TABLE IF EXISTS ${tableName}`
@@ -194,11 +190,11 @@ export const writeGrade = (
         db.get(
           averageQuery,
           [subjectId, session],
-          function (err, row: unknown) {
+          function (err, row: { class_average: number }) {
             if (err) {
               reject(err)
             } else {
-              const { class_average } = row as GradeRow
+              const { class_average } = row
               const updateQuery = `
               UPDATE ${tableName}
               SET class_average = ?

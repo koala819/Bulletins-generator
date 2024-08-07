@@ -6,7 +6,6 @@ import { Navbar } from '@/components/molecules/Navbar'
 
 import { Providers } from './providers'
 
-import { useSession } from '@/context/SessionContext'
 import '@/lib/init-db'
 import { cn } from '@/lib/utils'
 import '@/styles/globals.css'

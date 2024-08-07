@@ -5,7 +5,7 @@ import { EducationConfig } from '@/components/atoms/EducationConfig'
 export const metadata: Metadata = {
   title: 'Enseignement Général et Scientifique',
   alternates: {
-    canonical: `${process.env.CLIENT_URL}/conf/generalEducation`,
+    canonical: `${process.env.API_URL}/conf/generalEducation`,
   },
 }
 

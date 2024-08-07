@@ -58,7 +58,7 @@ export function Navbar() {
             <Home />
           </Link>
           <Select
-            onValueChange={(value) => setSession(parseInt(value) as Session)}
+            onValueChange={(value) => setSession(parseInt(value) as any)}
             value={session.toString()}
           >
             <SelectTrigger className="w-[300px]">
@@ -84,17 +84,25 @@ export function Navbar() {
                   </NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>
-              <NavigationMenuItem>
-                <Link href="/item1" legacyBehavior passHref>
-                  <NavigationMenuLink className="px-3 py-2">
-                    Phase 2
-                  </NavigationMenuLink>
-                </Link>
-              </NavigationMenuItem>
+
               <NavigationMenuItem>
                 <Link href="/students" legacyBehavior passHref>
                   <NavigationMenuLink className="px-3 py-2">
                     Elèves
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <Link href="/grades" legacyBehavior passHref>
+                  <NavigationMenuLink className="px-3 py-2">
+                    Notes
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <Link href="/report" legacyBehavior passHref>
+                  <NavigationMenuLink className="px-3 py-2">
+                    Bulletins
                   </NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>
@@ -118,19 +126,27 @@ export function Navbar() {
                 >
                   Configuration
                 </Link>
-                <Link
-                  className="flex items-center gap-2 rounded-md px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-800"
-                  href="/item2"
-                  onClick={closeSheet}
-                >
-                  Phase 2
-                </Link>
+
                 <Link
                   className="flex items-center gap-2 rounded-md px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-800"
                   href="/students"
                   onClick={closeSheet}
                 >
                   Elèves
+                </Link>
+                <Link
+                  className="flex items-center gap-2 rounded-md px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-800"
+                  href="/grades"
+                  onClick={closeSheet}
+                >
+                  Notes
+                </Link>
+                <Link
+                  className="flex items-center gap-2 rounded-md px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-800"
+                  href="/report"
+                  onClick={closeSheet}
+                >
+                  Bulletin
                 </Link>
               </nav>
             </SheetContent>

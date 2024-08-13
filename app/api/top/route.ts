@@ -5,7 +5,6 @@ import { createTopValues, getAll } from '@/backend/helpers'
 export async function GET() {
   try {
     const data = await getAll('top_values')
-
     return NextResponse.json({ data: data }, { status: 200 })
   } catch (error) {
     return NextResponse.json(

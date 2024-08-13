@@ -4,7 +4,7 @@ export const createTableWithSchema = async (
   tableName: string,
   schema: string,
 ) => {
-  const dropQuery = `DROP TABLE IF EXISTS ${tableName}`
+  const dropQuery = `DROP TABLE IF EXISTS ${tableName} CASCADE`
   const createQuery = `CREATE TABLE IF NOT EXISTS ${tableName} ${schema}`
 
   try {

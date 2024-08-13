@@ -113,7 +113,7 @@ const GradeEntry = () => {
           console.error('Failed to update grade:', await res.text())
         } else {
           toast.success('Notes enregistrées avec succès !')
-          form.reset()
+          // form.reset()
           router.push('/')
         }
       } catch (error) {

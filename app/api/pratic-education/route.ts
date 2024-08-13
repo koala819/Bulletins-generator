@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const schema = `(
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id SERIAL PRIMARY KEY,
             name TEXT NOT NULL,
             module TEXT NOT NULL
     )`

@@ -1,116 +1,5 @@
+// migrations.ts
 import { db } from './db'
-
-// export const createStudentWithSessions = async (
-//   firstname: string,
-//   lastname: string,
-//   subjects: {
-//     general: { name: string; module: string }[]
-//     pratic: { name: string; module: string }[]
-//   },
-// ) => {
-//   try {
-//     const result = await db`
-//       INSERT INTO students (firstname, lastname)
-//       VALUES (${firstname}, ${lastname})
-//       RETURNING id
-//     `
-//     const studentId = result[0].id
-
-//     for (const subject of subjects.general) {
-//       for (let session = 1; session <= 2; session++) {
-//         await db`
-//           INSERT INTO general_education (student_id, subject_id, session, grade, class_average, appreciation)
-//           VALUES (
-//             ${studentId},
-//             (SELECT id FROM general_subjects WHERE name = ${subject.name} AND module = ${subject.module}),
-//             ${session},
-//             NULL,
-//             NULL,
-//             NULL
-//           )
-//         `
-//       }
-//     }
-
-//     for (const subject of subjects.pratic) {
-//       for (let session = 1; session <= 2; session++) {
-//         await db`
-//           INSERT INTO pratic_education (student_id, subject_id, session, grade, class_average, appreciation)
-//           VALUES (
-//             ${studentId},
-//             (SELECT id FROM pratic_subjects WHERE name = ${subject.name} AND module = ${subject.module}),
-//             ${session},
-//             NULL,
-//             NULL,
-//             NULL
-//           )
-//         `
-//       }
-//     }
-
-//     return studentId
-//   } catch (error) {
-//     console.error(
-//       "Erreur lors de la création de l'étudiant avec sessions:",
-//       error,
-//     )
-//     throw error
-//   }
-// }
-
-// export const createGeneralEducation = async (
-//   fields: {
-//     student_id: number
-//     subject_id: number
-//     session: number
-//     grade: number
-//     class_average: number
-//     appreciation: string
-//   }[],
-// ) => {
-//   try {
-//     for (const field of fields) {
-//       await db`
-//         INSERT INTO general_education (student_id, subject_id, session, grade, class_average, appreciation)
-//         VALUES (${field.student_id}, ${field.subject_id}, ${field.session}, ${field.grade}, ${field.class_average}, ${field.appreciation})
-//       `
-//     }
-//     return true
-//   } catch (error) {
-//     console.error(
-//       "Erreur lors de la création des valeurs pour l'éducation générale:",
-//       error,
-//     )
-//     throw error
-//   }
-// }
-
-// export const createPraticEducation = async (
-//   fields: {
-//     student_id: number
-//     subject_id: number
-//     session: number
-//     grade: number
-//     class_average: number
-//     appreciation: string
-//   }[],
-// ) => {
-//   try {
-//     for (const field of fields) {
-//       await db`
-//         INSERT INTO pratic_education (student_id, subject_id, session, grade, class_average, appreciation)
-//         VALUES (${field.student_id}, ${field.subject_id}, ${field.session}, ${field.grade}, ${field.class_average}, ${field.appreciation})
-//       `
-//     }
-//     return true
-//   } catch (error) {
-//     console.error(
-//       "Erreur lors de la création des valeurs pour l'éducation pratique:",
-//       error,
-//     )
-//     throw error
-//   }
-// }
 
 export const createTables = async () => {
   console.log('Début de la création des tables...')
@@ -201,6 +90,118 @@ export const updateGrade = async (
     return true
   } catch (error) {
     console.error('Error updating grade:', error)
+    throw error
+  }
+}
+
+export const createStudentWithSessions = async (
+  firstname: string,
+  lastname: string,
+  subjects: {
+    general: { name: string; module: string }[]
+    pratic: { name: string; module: string }[]
+  },
+) => {
+  try {
+    const [student] = await db`
+      INSERT INTO students (firstname, lastname)
+      VALUES (${firstname}, ${lastname})
+      RETURNING id
+    `
+    const studentId = student.id
+
+    for (const subject of subjects.general) {
+      for (let session = 1; session <= 2; session++) {
+        await db`
+          INSERT INTO general_education (student_id, subject_id, session, grade, class_average, appreciation)
+          VALUES (
+            ${studentId},
+            (SELECT id FROM general_subjects WHERE name = ${subject.name} AND module = ${subject.module}),
+            ${session},
+            NULL,
+            NULL,
+            NULL
+          )
+        `
+      }
+    }
+
+    for (const subject of subjects.pratic) {
+      for (let session = 1; session <= 2; session++) {
+        await db`
+          INSERT INTO pratic_education (student_id, subject_id, session, grade, class_average, appreciation)
+          VALUES (
+            ${studentId},
+            (SELECT id FROM pratic_subjects WHERE name = ${subject.name} AND module = ${subject.module}),
+            ${session},
+            NULL,
+            NULL,
+            NULL
+          )
+        `
+      }
+    }
+
+    return studentId
+  } catch (error) {
+    console.error(
+      "Erreur lors de la création de l'étudiant avec sessions:",
+      error,
+    )
+    throw error
+  }
+}
+
+export const createGeneralEducation = async (
+  fields: {
+    student_id: number
+    subject_id: number
+    session: number
+    grade: number
+    class_average: number
+    appreciation: string
+  }[],
+) => {
+  try {
+    for (const field of fields) {
+      await db`
+        INSERT INTO general_education (student_id, subject_id, session, grade, class_average, appreciation)
+        VALUES (${field.student_id}, ${field.subject_id}, ${field.session}, ${field.grade}, ${field.class_average}, ${field.appreciation})
+      `
+    }
+    return true
+  } catch (error) {
+    console.error(
+      "Erreur lors de la création des valeurs pour l'éducation générale:",
+      error,
+    )
+    throw error
+  }
+}
+
+export const createPraticEducation = async (
+  fields: {
+    student_id: number
+    subject_id: number
+    session: number
+    grade: number
+    class_average: number
+    appreciation: string
+  }[],
+) => {
+  try {
+    for (const field of fields) {
+      await db`
+        INSERT INTO pratic_education (student_id, subject_id, session, grade, class_average, appreciation)
+        VALUES (${field.student_id}, ${field.subject_id}, ${field.session}, ${field.grade}, ${field.class_average}, ${field.appreciation})
+      `
+    }
+    return true
+  } catch (error) {
+    console.error(
+      "Erreur lors de la création des valeurs pour l'éducation pratique:",
+      error,
+    )
     throw error
   }
 }

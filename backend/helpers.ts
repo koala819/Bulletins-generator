@@ -1,18 +1,18 @@
-import { db } from './db'
-
-import { QueryResult, QueryResultRow } from '@vercel/postgres'
+import { db } from '@/backend/db'
 
 export const createTableWithSchema = async (
   tableName: string,
   schema: string,
 ) => {
+  const dropQuery = `DROP TABLE IF EXISTS ${tableName}`
+  const createQuery = `CREATE TABLE IF NOT EXISTS ${tableName} ${schema}`
+
   try {
-    await db`DROP TABLE IF EXISTS ${tableName}`
-    await db`CREATE TABLE IF NOT EXISTS ${tableName} ${schema}`
+    await db(dropQuery)
+    await db(createQuery)
     return true
-  } catch (error) {
-    console.error('Error creating table:', error)
-    throw error
+  } catch (err) {
+    throw err
   }
 }
 
@@ -21,39 +21,41 @@ export const createTopValues = async (
 ) => {
   const tableName = 'top_values'
   const columns = fields.map((field) => `"${field.name}" TEXT`).join(', ')
-  const values = fields.map((field) => field.value)
+  const values = fields.map((field) => `'${field.value}'`).join(', ')
 
   try {
-    await db`DROP TABLE IF EXISTS ${tableName}`
+    await db(`DROP TABLE IF EXISTS ${tableName}`)
+    console.log('Table supprimée avec succès.')
 
-    await db`
+    const createTableQuery = `
       CREATE TABLE ${tableName} (
         id SERIAL PRIMARY KEY,
         ${columns}
-      )
+      );
     `
+    await db(createTableQuery)
+    console.log('Table dynamique créée avec succès.')
 
-    const insertQuery = `
+    const insertRowQuery = `
       INSERT INTO ${tableName} (${fields.map((field) => `"${field.name}"`).join(', ')})
-      VALUES (${fields.map((_, index) => `$${index + 1}`).join(', ')})
+      VALUES (${values});
     `
-
-    await db.query(insertQuery, values)
+    await db(insertRowQuery)
+    console.log('Valeurs insérées avec succès.')
 
     return true
-  } catch (error) {
-    console.error('Error creating top values:', error)
-    throw error
+  } catch (err) {
+    console.error('Erreur:', err)
+    throw err
   }
 }
 
 export const getAll = async (tableName: string) => {
   try {
-    const result = await db`SELECT * FROM ${tableName}`
-    return result
-  } catch (error) {
-    console.error('Error getting all rows:', error)
-    throw error
+    const rows = await db(`SELECT * FROM ${tableName}`)
+    return rows
+  } catch (err) {
+    throw err
   }
 }
 
@@ -62,32 +64,31 @@ export const getGrades = async (
   studentId: number,
   session: number,
 ) => {
+  const query = `
+    SELECT s.name, s.module, e.grade, e.class_average, e.appreciation
+    FROM ${tableName} e
+    JOIN ${tableName === 'general_education' ? 'general_subjects' : 'pratic_subjects'} s ON e.subject_id = s.id
+    WHERE e.student_id = $1 AND e.session = $2
+  `
   try {
-    const result = await db`
-      SELECT s.name, s.module, e.grade, e.class_average, e.appreciation
-      FROM ${tableName} e
-      JOIN ${tableName === 'general_education' ? 'general_subjects' : 'pratic_subjects'} s ON e.subject_id = s.id
-      WHERE e.student_id = ${studentId} AND e.session = ${session}
-    `
-    return result
-  } catch (error) {
-    console.error('Error getting grades:', error)
-    throw error
+    const rows = await db(query, [studentId, session])
+    return rows
+  } catch (err) {
+    throw err
   }
 }
 
 export const insert = async (tableName: string, data: Record<string, any>) => {
   const keys = Object.keys(data)
   const values = Object.values(data)
-  const placeholders = keys.map((_, index) => `$${index + 1}`).join(', ')
+  const placeholders = keys.map((_, i) => `$${i + 1}`).join(', ')
 
+  const query = `INSERT INTO ${tableName} (${keys.join(', ')}) VALUES (${placeholders}) RETURNING id`
   try {
-    const query = `INSERT INTO ${tableName} (${keys.join(', ')}) VALUES (${placeholders}) RETURNING id`
-    const result = await db.query(query, values)
-    return result.rows[0].id
-  } catch (error) {
-    console.error('Error inserting data:', error)
-    throw error
+    const result = await db(query, values)
+    return result[0].id
+  } catch (err) {
+    throw err
   }
 }
 
@@ -99,30 +100,28 @@ export const writeGrade = async (
   grade: number,
 ) => {
   try {
-    await db`
+    const insertQuery = `
       INSERT INTO ${tableName} (student_id, subject_id, session, grade)
-      VALUES (${studentId}, ${subjectId}, ${session}, ${grade})
+      VALUES ($1, $2, $3, $4)
     `
+    await db(insertQuery, [studentId, subjectId, session, grade])
 
-    const result: QueryResult<QueryResultRow> = await db`
+    const averageQuery = `
       SELECT AVG(grade) as class_average 
       FROM ${tableName} 
-      WHERE subject_id = ${subjectId} AND session = ${session}
+      WHERE subject_id = $1 AND session = $2
     `
+    const [{ class_average }] = await db(averageQuery, [subjectId, session])
 
-    const classAverage = result.rows[0]?.class_average ?? null
-
-    if (classAverage !== null) {
-      await db`
-        UPDATE ${tableName}
-        SET class_average = ${classAverage}
-        WHERE subject_id = ${subjectId} AND session = ${session}
-      `
-    }
+    const updateQuery = `
+      UPDATE ${tableName}
+      SET class_average = $1
+      WHERE subject_id = $2 AND session = $3
+    `
+    await db(updateQuery, [class_average, subjectId, session])
 
     return true
-  } catch (error) {
-    console.error('Error writing grade:', error)
-    throw error
+  } catch (err) {
+    throw err
   }
 }

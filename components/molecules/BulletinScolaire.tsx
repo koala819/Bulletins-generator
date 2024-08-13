@@ -1,12 +1,15 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 import GradesTable from '../atoms/GradesTable'
+import { Button } from '../ui/button'
 
 import { useSession } from '@/context/SessionContext'
+import html2canvas from 'html2canvas'
+import jsPDF from 'jspdf'
 
 const BulletinScolaire = () => {
   const { session, sessionDates, isLoading } = useSession()
@@ -16,6 +19,9 @@ const BulletinScolaire = () => {
   const [generalGrades, setGeneralGrades] = useState<any>([])
   const [praticSubjects, setPraticSubjects] = useState<any>([])
   const [praticGrades, setPraticGrades] = useState<any>([])
+  const [loading, setLoading] = useState<boolean>(true)
+
+  const pdfRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -58,6 +64,7 @@ const BulletinScolaire = () => {
         )
         const praticData = await praticResponse.json()
         setPraticSubjects(praticData.data)
+        setLoading(false)
       } catch (error) {
         console.error('Error fetching data:', error)
       }
@@ -73,9 +80,30 @@ const BulletinScolaire = () => {
   const currentSessionDate =
     session === 1 ? sessionDates.session1 : sessionDates.session2
 
+  const exportToPdf = () => {
+    const input = pdfRef.current
+    if (input) {
+      html2canvas(input, { scale: 2 }).then((canvas) => {
+        const imgData = canvas.toDataURL('image/png')
+        const pdf = new jsPDF('p', 'mm', 'a4')
+        const pdfWidth = pdf.internal.pageSize.getWidth()
+        const pdfHeight = (canvas.height * pdfWidth) / canvas.width
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight)
+        pdf.save('bulletin_scolaire.pdf')
+      })
+    }
+  }
+
+  if (loading) {
+    return <div className="text-center">Chargement...</div>
+  }
+
   return (
     <div className="container mx-auto p-4">
-      <Card>
+      <Button onClick={exportToPdf} className="mb-4 p-2 bg-blue-500 text-white">
+        Exporter en PDF
+      </Button>
+      <Card ref={pdfRef}>
         <CardHeader className="text-center">
           <CardTitle className="text-center">
             BULLETIN D&apos;EVALUATION

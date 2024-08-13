@@ -1,15 +1,7 @@
-import path from 'path'
-import sqlite3 from 'sqlite3'
+import { createPool } from '@vercel/postgres'
 
-const dbPath = path.join(process.cwd(), 'profile.db')
-// console.log('Chemin de la base de données:', dbPath)
-export const db = new sqlite3.Database(
-  dbPath,
-  sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE,
-  (err) => {
-    if (err) {
-      console.error(err.message)
-    }
-    console.log('Connected to the profile database.')
-  },
-)
+if (!process.env.DATABASE_URL) {
+  throw new Error('DATABASE_URL is not set')
+}
+
+export const db = createPool()

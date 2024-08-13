@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 
-import Try from '@/components/molecules/Try'
+import BulletinScolaire from '@/components/molecules/BulletinScolaire'
 
 export const metadata: Metadata = {
   title: 'Bulletins des élèves',
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 }
 
 const ReportPage = () => {
-  return <Try />
+  return <BulletinScolaire />
 }
 
 export default ReportPage
